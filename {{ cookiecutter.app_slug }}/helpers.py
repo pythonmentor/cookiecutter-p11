@@ -1,4 +1,4 @@
-"""Helpers fonctions to make the use of the {{ cookiecutter.app_slug }} app easier."""
+"""Helpers fonctions to make the use of the favoritecart app easier."""
 
 from urllib.parse import urlparse
 
@@ -12,21 +12,23 @@ from django.contrib.auth.views import (
 
 # adapted from login_required decorator from django.contrib.auth.decorators
 def redirect_to_login(
-    request, redirect_field_name=REDIRECT_FIELD_NAME, login_url=None
+    request,
+    favorite_url,
+    redirect_field_name=REDIRECT_FIELD_NAME,
+    login_url=None,
 ):
     """Redirects the user to the login page."""
-    path = request.build_absolute_uri()
+    resolved_favorite_url = resolve_url(favorite_url)
     resolved_login_url = resolve_url(login_url or settings.LOGIN_URL)
     # If the login url is the same scheme and net location then just
     # use the path as the "next" url.
     login_scheme, login_netloc = urlparse(resolved_login_url)[:2]
-    current_scheme, current_netloc = urlparse(path)[:2]
-    if (not login_scheme or login_scheme == current_scheme) and (
-        not login_netloc or login_netloc == current_netloc
+    favorite_scheme, favorite_netloc = urlparse(resolved_favorite_url)[:2]
+    if (not login_scheme or login_scheme == favorite_scheme) and (
+        not login_netloc or login_netloc == favorite_netloc
     ):
-        path = request.get_full_path()
+        resolved_favorite_url = request.get_full_path()
 
     return auth_redirect_to_login(
-        path, resolved_login_url, redirect_field_name
+        resolved_favorite_url, resolved_login_url, redirect_field_name
     )
-
