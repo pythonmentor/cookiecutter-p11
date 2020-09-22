@@ -1,6 +1,6 @@
 <script>
-$("{{ autocomplete_class }}").autocomplete({
-    source: "{% url 'completions:complete' %}",
-    minLength: {{ autocomplete_min_length }}
+$("{% raw %}{{ autocomplete_class }}{% endraw %}").autocomplete({
+    source: "{% raw %}{% url 'completions:complete' %}{% endraw %}",
+    minLength: {% raw %}{{ autocomplete_min_length }}{% endraw %}
 });
 </script>
