@@ -2,6 +2,12 @@ from django.apps import apps as django_apps
 from django.conf import settings
 
 
+def get_favorites():
+    """Returns a list of dictionaries containing the favorites."""
+    fav_model = get_model("{{ cookiecutter.app_slug.upper }}_MODEL")
+    fav_fields = getattr(settings, "{{ cookiecutter.app_slug.upper }}_FIELDS")
+    return fav_model.objects.all().values(*fav_fields)
+
 def get_model(self, constant_name):
     """Returns the model specified with constant_name in the settings."""
     model_name = getattr(settings, constant_name)
