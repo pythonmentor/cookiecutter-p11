@@ -6,5 +6,5 @@ from . import views
 app_name = "{{ cookiecutter.app_slug }}"
 
 urlpatterns = [
-    path("", views.export, name="export")
+    path("", views.complete, name="complete")
 ]
