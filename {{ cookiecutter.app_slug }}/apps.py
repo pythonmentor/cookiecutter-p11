@@ -3,7 +3,7 @@
 from django.apps import AppConfig
 
 
-class {{ cookiecutter.app_slug.title }}Config(AppConfig):
+class {{ cookiecutter.app_slug.title()|replace('_', '') }}Config(AppConfig):
     """Main config data structure for the {{ cookiecutter.app_slug }} app."""
 
     name = '{{ cookiecutter.app_slug }}'
