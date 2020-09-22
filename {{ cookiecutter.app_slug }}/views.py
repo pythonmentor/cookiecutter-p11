@@ -1,11 +1,12 @@
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse, HttpResponseNotFound
 
-from .helpers import get_exports
+from .helpers import get_completions
 
 
-@login_required
-def export(request):
-    """Exports instances as a json file."""
-    collection = get_exports()
-    return JsonResponse(collection, safe=False)
+def complete(request):
+    """Returns a list of terms in a json format for jquery-ui autocomplete."""
+    term = request.GET.get("term")
+    if term is None:
+        JsonResponse([], safe=False)
+    terms = get_completions(term)
+    return JsonResponse(terms, safe=False)
