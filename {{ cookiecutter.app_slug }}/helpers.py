@@ -6,16 +6,15 @@ def get_exports():
     """Returns a list of dictionaries containing the instances to export."""
     model = get_model("{{ cookiecutter.app_slug.upper() }}_MODEL")
     fields = getattr(settings, "{{ cookiecutter.app_slug.upper() }}_FIELDS")
-    if not isinstance(field, list):
+    if not isinstance(fields, list):
         raise ImproperlyConfigured(
             f"{{ cookiecutter.app_slug.upper() }}_FIELDS must be a list of strings."
         )
     order = getattr(settings, "{{ cookiecutter.app_slug.upper() }}_ORDER", ['?'])
-    if not isinstance(field, list):
+    if not isinstance(order, list):
         raise ImproperlyConfigured(
             f"{{ cookiecutter.app_slug.upper() }}_ORDER must be a list of strings."
         )
-    
     return list(model.objects.order_by(*order).values(*fields))
 
 def get_model(self, constant_name):
