@@ -2,11 +2,20 @@ from django.apps import apps as django_apps
 from django.conf import settings
 
 
-def get_exports():
-    """Returns a list of dictionaries containing the instances to export."""
+def get_completions():
+    """Returns a list of dictionaries containing the name suggestions for autocompletion."""
     model = get_model("{{ cookiecutter.app_slug.upper() }}_MODEL")
-    fields = getattr(settings, "{{ cookiecutter.app_slug.upper() }}_FIELDS")
-    return list(model.objects.all().values(*fields))
+    field = getattr(settings, "{{ cookiecutter.app_slug.upper() }}_FIELD")
+    if not isinstance(field, str):
+        raise ImproperlyConfigured(
+            f"{{ cookiecutter.app_slug.upper() }}_FIELD must be a string."
+        )
+    order = getattr(settings, "{{ cookiecutter.app_slug.upper() }}_ORDER", ['?'])
+    if not isinstance(field, str):
+        raise ImproperlyConfigured(
+            f"{{ cookiecutter.app_slug.upper() }}_ORDER must be a list of strings."
+        )
+    return list(model.objects.order_by(*order).values_list(field, flat=True))
 
 def get_model(self, constant_name):
     """Returns the model specified with constant_name in the settings."""
