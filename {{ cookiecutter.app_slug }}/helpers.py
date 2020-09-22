@@ -2,7 +2,7 @@ from django.apps import apps as django_apps
 from django.conf import settings
 
 
-def get_completions():
+def get_completions(term):
     """Returns a list of dictionaries containing the name suggestions for autocompletion."""
     model = get_model("{{ cookiecutter.app_slug.upper() }}_MODEL")
     field = getattr(settings, "{{ cookiecutter.app_slug.upper() }}_FIELD")
@@ -11,11 +11,19 @@ def get_completions():
             f"{{ cookiecutter.app_slug.upper() }}_FIELD must be a string."
         )
     order = getattr(settings, "{{ cookiecutter.app_slug.upper() }}_ORDER", ['?'])
-    if not isinstance(field, str):
+    if not isinstance(order, list):
         raise ImproperlyConfigured(
             f"{{ cookiecutter.app_slug.upper() }}_ORDER must be a list of strings."
         )
-    return list(model.objects.order_by(*order).values_list(field, flat=True))
+    method = getattr(settings, "{{ cookiecutter.app_slug.upper() }}_METHOD", 'icontains')
+    if not isinstance(method, str):
+        raise ImproperlyConfigured(
+            f"{{ cookiecutter.app_slug.upper() }}_ORDER must be a string."
+        )
+    kwargs = {
+        f"{field}__{method}": term
+    }
+    return list(model.objects.filter(**kwargs).order_by(*order).values_list(field, flat=True))
 
 def get_model(self, constant_name):
     """Returns the model specified with constant_name in the settings."""
